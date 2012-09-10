@@ -22,11 +22,11 @@
 module.exports = (function() {
 	// get required modules
 	var fs = require('fs'),
-      path = require('path'),
+			path = require('path'),
 	    exec = require('child_process').exec,
 	    back = __dirname;
 
-  fs.existsSync || (fs.existsSync = path.existsSync);
+	fs.existsSync || (fs.existsSync = path.existsSync);
 	
 	/*
 	 * repository() - private
@@ -410,6 +410,36 @@ module.exports = (function() {
 	 */
 	function remove(path, files, callback) {
 		stage('rm --cached', path, files, callback);
+	}
+
+	/*
+	 * remove_recursive() - public
+	 * removes the array of files in the specified repository for commit
+	 */
+	function remove_recursive(path, dir, callback) {
+		if (repository(path)) {
+			exec('git rm -r --cached ' + dir, function(err, stdout, stderr) {
+				if (err || stderr) {
+					console.log(err || stderr);
+					if (callback) {
+						process.chdir(back);
+						callback.call(this, {
+							error : err || stderr
+						});
+					}
+				// all is good
+				} else if (stdout) {
+					process.chdir(back);
+					callback.call(this, {
+						message : stdout
+					});
+				}
+			});
+		} else {
+			callback.call(this, {
+				error : 'Invalid repository'
+			});
+		}
 	}
 	
 	/*
@@ -893,6 +923,7 @@ module.exports = (function() {
 		status : status,
 		add : add,
 		remove : remove,
+		remove_recursive : remove_recursive,
 		commit : commit,
 		tree : tree,
 		branch : branch,
