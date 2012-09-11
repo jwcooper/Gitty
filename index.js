@@ -108,6 +108,47 @@ module.exports = (function() {
 			}
 		}
 	}
+
+	/*
+	 * config() - public
+	 * lists the git config and passes the val as a string into the callback
+	 */
+	function config(path, key, value, callback) {
+		if (repository(path)) {
+			var command = 'git config --global';
+			if (key) {
+				command += ' ' + key;
+			}
+
+			if (value) {
+				command += ' "' + value + '"';
+			}
+			exec(command, function(err, stdout, stderr) {
+				// if error, pass error object into callback
+				if (err || stderr) {
+					console.log(err || stderr);
+					if (callback) {
+						callback.call(this, {
+							error : err || stderr
+						});
+					}
+				// if successful, trim the trailing comma, and close output string
+				// then parse the JSON object and pass into callback
+				} else if (stdout) {
+					if (callback) {
+						process.chdir(back);
+						callback.call(this, stdout.replace('\n', ''));
+					}
+				}
+			});
+		} else {
+			if (callback) {
+				callback.call(this, {
+					error : 'Invalid Repository'
+				});
+			}
+		}
+	}
 	
 	/*
 	 * create() - public
@@ -918,6 +959,7 @@ module.exports = (function() {
 	// public methods
 	return {
 		history : history,
+		config : config,
 		create : create,
 		destroy : destroy,
 		status : status,
@@ -938,4 +980,3 @@ module.exports = (function() {
 	};
   
 })();
-
