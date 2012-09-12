@@ -129,9 +129,7 @@ module.exports = (function() {
 									console.log('here');
 				console.log(err || stderr);
 				if (callback) {
-					callback.call(this, {
-						error : err || stderr
-					});
+					callback.call(this, err || stderr, null);
 				}
 			// if successful, trim the trailing comma, and close output string
 			// then parse the JSON object and pass into callback
@@ -142,7 +140,7 @@ module.exports = (function() {
 				}
 				if (callback) {
 					process.chdir(back);
-					callback.call(this, response);
+					callback.call(this, null, response);
 				}
 			}
 		});
