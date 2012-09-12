@@ -123,8 +123,10 @@ module.exports = (function() {
 			command += ' "' + value + '"';
 		}
 		exec(command, function(err, stdout, stderr) {
+			console.log(err, stdout, stderr);
 			// if error, pass error object into callback
 			if (err || stderr) {
+									console.log('here');
 				console.log(err || stderr);
 				if (callback) {
 					callback.call(this, {
@@ -133,10 +135,14 @@ module.exports = (function() {
 				}
 			// if successful, trim the trailing comma, and close output string
 			// then parse the JSON object and pass into callback
-			} else if (stdout) {
+			} else {
+				var response;
+				if (stdout) {
+					response = stdout.replace('\n', '');
+				}
 				if (callback) {
 					process.chdir(back);
-					callback.call(this, stdout.replace('\n', ''));
+					callback.call(this, response);
 				}
 			}
 		});
