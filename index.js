@@ -478,6 +478,36 @@ module.exports = (function() {
 			});
 		}
 	}
+
+	/*
+	 * move() - public
+	 * moves file or folder from source to destination.
+	 */
+	function move(path, source, destination, callback) {
+		if (repository(path)) {
+			exec('git mv ' + source + ' ' + destination, function(err, stdout, stderr) {
+				if (err || stderr) {
+					console.log(err || stderr);
+					if (callback) {
+						process.chdir(back);
+						callback.call(this, {
+							error : err || stderr
+						});
+					}
+				// all is good
+				} else if (stdout) {
+					process.chdir(back);
+					callback.call(this, {
+						message : stdout
+					});
+				}
+			});
+		} else {
+			callback.call(this, {
+				error : 'Invalid repository'
+			});
+		}
+	}	
 	
 	/*
 	 * unstage() - public
@@ -962,6 +992,7 @@ module.exports = (function() {
 		add : add,
 		remove : remove,
 		remove_recursive : remove_recursive,
+		move : move,
 		commit : commit,
 		tree : tree,
 		branch : branch,
