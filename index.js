@@ -485,7 +485,9 @@ module.exports = (function() {
 	 */
 	function move(path, source, destination, callback) {
 		if (repository(path)) {
-			exec('git mv ' + source + ' ' + destination, function(err, stdout, stderr) {
+			var command = 'git mv ' + source + ' ' + destination;
+			exec(command, function(err, stdout, stderr) {
+				console.log(err, stdout, stderr);
 				if (err || stderr) {
 					console.log(err || stderr);
 					if (callback) {
@@ -495,7 +497,7 @@ module.exports = (function() {
 						});
 					}
 				// all is good
-				} else if (stdout) {
+				} else {
 					process.chdir(back);
 					callback.call(this, {
 						message : stdout
@@ -507,7 +509,7 @@ module.exports = (function() {
 				error : 'Invalid repository'
 			});
 		}
-	}	
+	}
 	
 	/*
 	 * unstage() - public
