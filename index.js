@@ -882,7 +882,7 @@ module.exports = (function() {
 	 * pulls the specified branch from the specified remote
 	 */
 	function pull(path, remote, branch, callback) {
-		var cmd = 'git pull ' + ((remote) ? remote : '') + ' ' + ((branch) ? branch : '');
+		var cmd = 'git pull ' + ((remote) ? remote : '') + ' ' + ((branch) ? branch : '') + ' -q';
 		if (repository(path)) {
 			exec(cmd, function(err, stdout, stderr) {
 				if (err || stderr) {
