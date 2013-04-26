@@ -847,7 +847,7 @@ module.exports = (function() {
 	 * pushes the specified branch to the specified remote
 	 */
 	function push(path, remote, branch, callback) {
-		var cmd = 'git push -u ' + ((remote) ? remote : '') + ' ' + ((branch) ? branch : '');
+		var cmd = 'git push -u ' + ((remote) ? remote : '') + ' ' + ((branch) ? branch : '') + ' -q';
 		if (repository(path)) {
 			exec(cmd, function(err, stdout, stderr) {
 				
